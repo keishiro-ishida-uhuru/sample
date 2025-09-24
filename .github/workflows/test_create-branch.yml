@@ -1,0 +1,30 @@
+# This is a test workflow
+# 指定のタグ名をトリガー
+# ブランチを作成する
+
+name: Create Branch
+
+on:
+  push:
+    tags:
+      # 'release-*'で始まるタグを作成した時に起動
+      - 'release-*'  
+
+jobs:
+  create-branch:
+    runs-on:ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/check@v3
+
+      - name: Create and push new branch from tag name
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_SUFFIX=$(echo "${{ github.ref_name }}" | sed 's/^release-//')
+          BRANCH_NAME="pre-release-${TAG_SUFFIX}"
+
+          git checkout -b ${BRANCH_NAME}
+
+          git push --set-upstream origin ${BRANCH_NAME}
+          
