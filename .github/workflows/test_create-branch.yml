@@ -23,26 +23,16 @@ jobs:
           BRANCH_NAME="pre-release-${TAG_SUFFIX}"
 
           git checkout -b ${BRANCH_NAME}
-
-          git push --set-upstream origin ${BRANCH_NAME}
-      - name: Read package.xml and create a new text file
-        id: read_xml
-        run: |
-          XML_FILE_PATH="manifest/package.xml"
-          TEXT_FILE_PATH="./package_copy.txt"
-
-          cat ${XML_FILE_PATH} > ${TEXT_FILE_PATH}
-
-          if [ -f "${TEXT_FILE_PATH}" ]; then
-            echo "::notice file=${TEXT_FILE_PATH}::${TEXT_FILE_PATH} has been created with package.xml content."
-          else
-            echo "::error file=${TEXT_FILE_PATH}::Failed to create ${TEXT_FILE_PATH}."
-            exit 1
-          fi
-      - name: Commit and push the new text file
-        run: |
+          
+          # 既存のファイルをステージングから削除
+          git rm -r --cached .
+          
+          # package.xmlの内容をテキストファイルに書き出す
+          cat manifest/package.xml > package_content.txt
+          
+          # 新しいファイルのみをコミットしてプッシュ
+          git add .
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git add .
-          git commit -m "Add package.xml content as a text file" || echo "No changes to commit"
-          git push
+          git commit -m "Add package.xml content"
+          git push --set-upstream origin ${BRANCH_NAME}
