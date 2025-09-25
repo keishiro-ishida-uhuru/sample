@@ -5,7 +5,10 @@ on:
     tags:
       # 'release-*'で始まるタグを作成した時に起動
       - 'release-*'  
-
+# 権限追加
+permissions:
+  contents: write
+  
 jobs:
   create-branch:
     runs-on: ubuntu-latest
