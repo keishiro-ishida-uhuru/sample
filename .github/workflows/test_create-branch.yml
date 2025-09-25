@@ -23,15 +23,12 @@ jobs:
           BRANCH_NAME="pre-release-${TAG_SUFFIX}"
 
           git checkout -b ${BRANCH_NAME}
-          
-          # 既存のファイルをステージングから削除
-          git rm -r --cached .
-          
+                   
           # package.xmlの内容をテキストファイルに書き出す
           cat manifest/package.xml > package_content.txt
           
           # 新しいファイルのみをコミットしてプッシュ
-          git add .
+          git add package_content.txt
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git commit -m "Add package.xml content"
